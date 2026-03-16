@@ -1,0 +1,26 @@
+# Build artifacts
+*.o
+*.lst
+*.log
+monitor*
+build.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+env/
+venv/
+.venv/
+pip-wheel-metadata/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated
+.DS_Store
+Thumbs.db

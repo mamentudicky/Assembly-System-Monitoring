@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Assembly System Monitoring</title>
+    <style>
+        body { font-family: sans-serif; background: #222; color: #0f0; text-align: center; padding: 20px; }
+        h1 { color: #0f0; }
+        .stats { display: flex; justify-content: center; flex-wrap: wrap; }
+        .card { border: 1px solid #0f0; padding: 20px; margin: 10px; min-width: 180px; background: #111; border-radius: 8px; }
+        .value { font-size: 2em; color: #0f0; font-weight: bold; }
+        .label { color: #aaa; font-size: 0.9em; }
+        .error { color: #f00; }
+        .loading { color: #ff0; }
+    </style>
+</head>
+<body>
+    <h1>System Monitor (Powered by Assembly)</h1>
+    <div class="stats" id="stats">
+        <div class="card">
+            <div class="label">Uptime (ticks)</div>
+            <div class="value" id="uptime">-</div>
+        </div>
+        <div class="card">
+            <div class="label">CPU Load</div>
+            <div class="value" id="cpu_load">-</div>
+        </div>
+        <div class="card">
+            <div class="label">Memory Total (MB)</div>
+            <div class="value" id="memory_total">-</div>
+        </div>
+        <div class="card">
+            <div class="label">Memory Free (MB)</div>
+            <div class="value" id="memory_free">-</div>
+        </div>
+        <div class="card">
+            <div class="label">Processes</div>
+            <div class="value" id="processes">-</div>
+        </div>
+        <div class="card error" id="error" style="display:none;">
+            <div class="label">Error</div>
+            <div class="value">-</div>
+        </div>
+    </div>
+
+    <script>
+        function updateData() {
+            const errorEl = document.getElementById('error');
+            const values = document.querySelectorAll('.value');
+            values.forEach(el => el.innerText = '...'); // loading
+            errorEl.style.display = 'none';
+
+            fetch('/data')
+                .then(res => {
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.error) {
+                        errorEl.querySelector('.value').innerText = data.error;
+                        errorEl.style.display = 'block';
+                        return;
+                    }
+                    document.getElementById('uptime').innerText = data.uptime || '-';
+                    document.getElementById('cpu_load').innerText = data.cpu_load || '-';
+                    document.getElementById('memory_total').innerText = data.memory_total || '-';
+                    document.getElementById('memory_free').innerText = data.memory_free || '-';
+                    document.getElementById('processes').innerText = data.processes || '-';
+                })
+                .catch(err => {
+                    console.error('Fetch error:', err);
+                    errorEl.querySelector('.value').innerText = err.message;
+                    errorEl.style.display = 'block';
+                });
+        }
+        updateData();
+        setInterval(updateData, 2000); // Update every 2s to match monitor cycle
+    </script>
+</body>
+</html>
+
