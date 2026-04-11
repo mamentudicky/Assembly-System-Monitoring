@@ -20,8 +20,9 @@ def get_data():
             "mem_total": 0,
             "mem_used": 0,
             "mem_free": 0,
-            "mem_buffers": 0,
             "mem_cached": 0,
+            "net_down": "0 kB/s",
+            "net_up": "0 kB/s",
             "processes": []
         }
         
@@ -38,8 +39,9 @@ def get_data():
             if 'MEM Total:' in line: data["mem_total"] = line.split('MEM Total:')[1].split()[0]
             if 'MEM Used:' in line: data["mem_used"] = line.split('MEM Used:')[1].split()[0]
             if 'MEM Free:' in line: data["mem_free"] = line.split('MEM Free:')[1].split()[0]
-            if 'MEM Buffers:' in line: data["mem_buffers"] = line.split('MEM Buffers:')[1].split()[0]
             if 'MEM Cached:' in line: data["mem_cached"] = line.split('MEM Cached:')[1].split()[0]
+            if 'NET Download:' in line: data["net_down"] = line.split('NET Download:')[1].strip()
+            if 'NET Upload:' in line: data["net_up"] = line.split('NET Upload:')[1].strip()
             
             if 'TOP_PROCESSES_START' in line:
                 is_proc_section = True
