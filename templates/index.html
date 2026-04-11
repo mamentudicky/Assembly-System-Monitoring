@@ -207,7 +207,11 @@
     </div>
 
     <script>
-        let sessionStartTime = Date.now();
+        // Ambil waktu mulai dari localStorage, jika tidak ada baru buat yang baru
+        if (!localStorage.getItem('monitoringStartTime')) {
+            localStorage.setItem('monitoringStartTime', Date.now());
+        }
+        let sessionStartTime = parseInt(localStorage.getItem('monitoringStartTime'));
 
         async function deepRefreshSystem() {
             const btn = document.getElementById('deep-refresh-btn');
@@ -223,8 +227,9 @@
                 const result = await response.json();
                 
                 if (result.status === 'success') {
-                    // 2. Reset Uptime
+                    // 2. Reset Uptime di localStorage (INI HANYA TERJADI SAAT TEKAN TOMBOL)
                     sessionStartTime = Date.now();
+                    localStorage.setItem('monitoringStartTime', sessionStartTime);
                     
                     // 3. Update data segera
                     await updateData();
